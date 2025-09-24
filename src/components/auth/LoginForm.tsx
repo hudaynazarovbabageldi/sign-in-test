@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Eye, EyeOff, Loader2, Lock, Mail } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const loginSchema = z.object({
   email: z
@@ -32,14 +33,28 @@ const loginSchema = z.object({
 });
 
 type LoginFormData = z.infer<typeof loginSchema>;
+// if have api-integrations (i wanna add it)
+
+// const loginUser = async (data: LoginFormData) => {
+//   const response = await api.post("/auth/login", data);
+//   return response.data;
+// };
 
 const loginUser = async (data: LoginFormData) => {
-  const response = await api.post("/auth/login", data);
-  return response.data;
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (data.email === "info@mail.com" && data.password === "123456") {
+        resolve({ message: "Login successful", user: { email: data.email } });
+      } else {
+        reject({ response: { data: { message: "Invalid credentials" } } });
+      }
+    }, 1000);
+  });
 };
 
 export const LoginForm = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const {
@@ -64,6 +79,11 @@ export const LoginForm = () => {
         description: "You have been logged in successfully.",
       });
       console.log("Login successful:", data);
+
+      setTimeout(() => {
+        navigate("/2fa");
+        window.location.reload();
+      }, 2000);
     },
     onError: (error: any) => {
       toast({
