@@ -29,11 +29,22 @@ const twoFactorSchema = z.object({
 
 type TwoFactorFormData = z.infer<typeof twoFactorSchema>;
 
-const verify2FA = async (data: TwoFactorFormData) => {
-  const response = await api.post("/auth/verify-2fa", data);
-  return response.data;
-};
+// const verify2FA = async (data: TwoFactorFormData) => {
+//   const response = await api.post("/auth/verify-2fa", data);
+//   return response.data;
+// };
 
+const verify2FA = async (data: TwoFactorFormData) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (data.code === "131311") {
+        resolve({ message: "2FA verified successfully" });
+      } else {
+        reject({ response: { data: { message: "Invalid code" } } });
+      }
+    }, 1000);
+  });
+};
 const requestNewCode = async () => {
   const response = await api.post("/auth/request-2fa-code");
   return response.data;
@@ -61,14 +72,20 @@ export const TwoFactorForm = () => {
   const code = watch("code");
 
   useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (countdown > 0) {
-      interval = setInterval(() => {
-        setCountdown((prev) => prev - 1);
-      }, 1000);
-    }
+    setCountdown(60);
+
+    const interval = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
     return () => clearInterval(interval);
-  }, [countdown]);
+  }, []);
 
   const formatCountdown = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -229,7 +246,6 @@ export const TwoFactorForm = () => {
               </p>
             )}
           </div>
-
           <div className="text-center">
             {countdown > 0 ? (
               <p className="text-sm text-muted-foreground">
@@ -248,15 +264,13 @@ export const TwoFactorForm = () => {
             )}
           </div>
 
-          {countdown === 0 && isCodeRequested && (
-            <Button
-              type="submit"
-              disabled={verifyMutation.isPending || code.length !== 6}
-              className="w-full h-12 bg-muted hover:bg-muted/80 text-muted-foreground font-normal disabled:opacity-50"
-            >
-              {verifyMutation.isPending ? "Verifying..." : "Continue"}
-            </Button>
-          )}
+          <Button
+            type="submit"
+            disabled={verifyMutation.isPending || code.length !== 6}
+            className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-normal disabled:opacity-50"
+          >
+            {verifyMutation.isPending ? "Verifying..." : "Continue"}
+          </Button>
         </form>
       </CardContent>
     </Card>
