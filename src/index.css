@@ -41,7 +41,7 @@ All colors MUST be HSL.
 
     /* Subtle borders and inputs */
     --border: 220 13% 91%;
-    --input: 0 0% 100%;
+    --input: 220 14% 96%;
     --ring: 210 100% 56%;
 
     --radius: 0.5rem;

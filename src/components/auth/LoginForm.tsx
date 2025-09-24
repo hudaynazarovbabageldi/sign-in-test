@@ -15,7 +15,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2 } from "lucide-react";
+import { Loader2, Lock, Mail } from "lucide-react";
 
 const loginSchema = z.object({
   email: z
@@ -94,13 +94,16 @@ export const LoginForm = () => {
             <Label htmlFor="email" className="sr-only">
               Email
             </Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="Email"
-              className="h-12 bg-input border-border text-foreground placeholder:text-muted-foreground"
-              {...register("email")}
-            />
+            <div className="relative">
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+              <Input
+                id="email"
+                type="email"
+                placeholder="Email"
+                className="h-12 pl-10 bg-input border-border text-foreground placeholder:text-muted-foreground"
+                {...register("email")}
+              />
+            </div>
             {errors.email && (
               <p className="text-sm text-destructive">{errors.email.message}</p>
             )}
@@ -110,13 +113,16 @@ export const LoginForm = () => {
             <Label htmlFor="password" className="sr-only">
               Password
             </Label>
-            <Input
-              id="password"
-              type="password"
-              placeholder="Password"
-              className="h-12 bg-input border-border text-foreground placeholder:text-muted-foreground"
-              {...register("password")}
-            />
+            <div className="relative">
+              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+              <Input
+                id="password"
+                type="password"
+                placeholder="Password"
+                className="h-12 pl-10 bg-input border-border text-foreground placeholder:text-muted-foreground"
+                {...register("password")}
+              />
+            </div>
             {errors.password && (
               <p className="text-sm text-destructive">
                 {errors.password.message}
