@@ -28,6 +28,7 @@ const twoFactorSchema = z.object({
 });
 
 type TwoFactorFormData = z.infer<typeof twoFactorSchema>;
+// Also, I wanna add
 
 // const verify2FA = async (data: TwoFactorFormData) => {
 //   const response = await api.post("/auth/verify-2fa", data);
@@ -148,9 +149,7 @@ export const TwoFactorForm = () => {
     requestNewCodeMutation.mutate();
   };
 
-  const handleBack = () => {
-    window.history.back();
-  };
+  const handleBack = () => {};
 
   const handleCodeChange = (value: string) => {
     setValue("code", value);
@@ -263,14 +262,15 @@ export const TwoFactorForm = () => {
               </Button>
             )}
           </div>
-
-          <Button
-            type="submit"
-            disabled={verifyMutation.isPending || code.length !== 6}
-            className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-normal disabled:opacity-50"
-          >
-            {verifyMutation.isPending ? "Verifying..." : "Continue"}
-          </Button>
+          {countdown > 0 && (
+            <Button
+              type="submit"
+              disabled={verifyMutation.isPending || code.length !== 6}
+              className="w-full h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-normal disabled:opacity-50"
+            >
+              {verifyMutation.isPending ? "Verifying..." : "Continue"}
+            </Button>
+          )}
         </form>
       </CardContent>
     </Card>
