@@ -15,7 +15,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Lock, Mail } from "lucide-react";
+import { Eye, EyeOff, Loader2, Lock, Mail } from "lucide-react";
 
 const loginSchema = z.object({
   email: z
@@ -40,6 +40,7 @@ const loginUser = async (data: LoginFormData) => {
 
 export const LoginForm = () => {
   const { toast } = useToast();
+  const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const {
     register,
@@ -117,11 +118,22 @@ export const LoginForm = () => {
               <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
               <Input
                 id="password"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 placeholder="Password"
-                className="h-12 pl-10 bg-input border-border text-foreground placeholder:text-muted-foreground"
+                className="h-12 pl-10 pr-10 bg-input border-border text-foreground placeholder:text-muted-foreground"
                 {...register("password")}
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+              >
+                {showPassword ? (
+                  <EyeOff className="h-5 w-5" />
+                ) : (
+                  <Eye className="h-5 w-5" />
+                )}
+              </button>
             </div>
             {errors.password && (
               <p className="text-sm text-destructive">
