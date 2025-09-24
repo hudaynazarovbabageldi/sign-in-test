@@ -46,9 +46,15 @@ export const LoginForm = () => {
     register,
     handleSubmit,
     formState: { errors },
+    watch,
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
   });
+
+  const email = watch("email");
+  const password = watch("password");
+
+  const isFormFilled = email?.trim() && password?.trim();
 
   const loginMutation = useMutation({
     mutationFn: loginUser,
@@ -144,8 +150,12 @@ export const LoginForm = () => {
 
           <Button
             type="submit"
-            disabled={loginMutation.isPending}
-            className="w-full h-12 bg-muted hover:bg-muted/80 text-muted-foreground font-normal"
+            disabled={!isFormFilled || loginMutation.isPending}
+            className={`w-full h-12 font-normal ${
+              !isFormFilled || loginMutation.isPending
+                ? "bg-muted text-muted-foreground cursor-not-allowed"
+                : "bg-primary text-primary-foreground hover:bg-primary/80"
+            }`}
           >
             {loginMutation.isPending ? (
               <>
